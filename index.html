@@ -153,7 +153,7 @@
 			var currTime = testStartTime = new Date().getTime();
 			var runTime = startTime === 0 ? 0 : currTime - startTime;
 
-			document.getElementById("scrollpos").innerHTML = last_known_scroll_position;
+			document.getElementById("scrollpos").innerHTML = Math.round(last_known_scroll_position).toString();
 			document.getElementById("invocations").innerHTML = invocations;
 			document.getElementById("runTime").innerHTML = runTime;
 		}
