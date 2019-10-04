@@ -23,14 +23,21 @@
 		.matcard {
 			background-color: rgb(255, 255, 255);
 			box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.24) 0px 1px 4px;
-			width: 100%;
 			border-radius: 0.25em;
-			padding: 24px;
+			padding: 12px;
 		}
-
+		h2{
+			margin: 0;
+			text-transform: uppercase;
+			padding-bottom: 6px;
+			margin-bottom: 6px;
+			border-bottom: 1px rgba(0,0,0,.08) solid;
+			font-weight: 500;
+			opacity: .6;
+		}
 		.wrapper {
 			display: grid;
-			grid-auto-flow: dense row;
+			grid-auto-flow:	dense row;
 			position: fixed;
 			width: 100%;
 			grid-gap: 24px;
@@ -42,14 +49,17 @@
 
 		.infoWrapper {
 			display: flex;
-			justify-content: space-between;
-			grid-gap: 24px;
+			justify-content: center;
 			font-size: 24px;
 			flex-wrap: wrap;
-			text-align: center;
 		}
-
-		.infoWrapper > span {
+		.controlWrapper {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+		span {
 			min-width: 250px;
 			margin-bottom: 6px;
 			margin-top: 6px;
@@ -62,7 +72,8 @@
 		.buttonWrapper {
 			display: flex;
 			flex-direction: column;
-			padding: 24px;
+			padding: 12px;
+			padding-left: 0;
 		}
 
 		.buttonWrapper > button {
@@ -70,12 +81,11 @@
 			border-style: solid;
 			border-color: rgb(223, 225, 229);
 			border-image: initial;
-			border-radius: 24px;
+			border-radius: .25em;
 			background: white;
 			transition: all 0.25s ease-in-out 0s;
 			cursor: pointer;
 			text-transform: uppercase;
-			font-size: 16px;
 			outline: none;
 			font-weight: 600;
 			padding: 12px;
@@ -86,6 +96,14 @@
 			background-color: black;
 			color: white;
 			box-shadow: rgba(32, 33, 36, 0.28) 0px 1px 6px 0px;
+		}
+
+		.optionsWrapper {
+			display: flex;
+			justify-content: space-around;
+			flex-direction: column;
+			padding: 12px;
+			padding-left: 0;
 		}
 	</style>
 </head>
@@ -102,19 +120,37 @@
 			<span>
 				RUNTIME: <strong id="runTime">0</strong> ms
 			</span>
-			<span>
-				THROTTLED:
-				<input type="checkbox" id="checkbox" checked="yes" onchange="window.checkChecked">
-			</span>
 		</div>
 
-		<div class="buttonWrapper matcard">
-			<button onclick="window.tester.tearDown();window.tester.setup(window.addToLocalStorage)">
-				LocalStorage
-			</button>
-			<button onclick="window.tester.tearDown();window.tester.setup(window.addToHistoryState)">
-				History.replaceState
-			</button>
+		<div class="controlWrapper matcard">
+			<div style="flex: 1 1 auto;margin: 12px;" class="matcard">
+				<h2>Options</h2>
+				<div class="optionsWrapper">
+					<div style="margin-bottom: 24px">
+						<label for="cb_throttled" style="font-weight: 700;">
+							THROTTLED:
+						</label>
+						<input type="checkbox" id="cb_throttled" checked="yes">
+					</div>
+					<div>
+						<label for="cb_scroll" style="font-weight: 700;">
+							AUTO SCROLL:
+						</label>
+						<input type="checkbox" id="cb_scroll">
+					</div>
+				</div>
+			</div>
+			<div style="flex: 10 1 auto;margin: 12px;" class="matcard">
+				<h2>Select Test</h2>
+				<div class="buttonWrapper">
+					<button onclick="window.tester.tearDown();window.tester.setup(window.addToLocalStorage)">
+						LocalStorage
+					</button>
+					<button onclick="window.tester.tearDown();window.tester.setup(window.addToHistoryState)" style="margin-bottom: 0">
+						History.replaceState
+					</button>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -136,18 +172,41 @@
 		var startTime = 0;
 		var autoScroller = undefined;
 		var rootEl = document.getElementById('root');
-		var checkbox = document.getElementById("checkbox");
+		var cb_throttled = document.getElementById("cb_throttled");
+		var cb_scroll = document.getElementById("cb_scroll");
 		var throttled = true;
+		var autoscroll = false;
 
-		checkbox.addEventListener('change', function () {
+		cb_throttled.addEventListener('change', function () {
 			throttled = this.checked;
 
 			if (funcRefs) {
 				_tearDown();
 				_setup(funcRefs.originalFunc);
 			}
-
 		});
+
+		cb_scroll.addEventListener('change', function () {
+			autoscroll = this.checked;
+			if (autoscroll) {
+				autoScroller = setupAutoScroll();
+			} else {
+				clearInterval(autoScroller);
+			}
+		});
+
+		function setupAutoScroll(){
+			var lastScroll = 0;
+			return setInterval(function () {
+				var newScroll = lastScroll === 0 ? rootEl.offsetHeight : 0;
+				window.scrollTo({
+					top: newScroll,
+					left: 0,
+					behavior:'smooth'
+				});
+				lastScroll = newScroll;
+			}, 1200);
+		}
 
 		function setElementData() {
 			var currTime = testStartTime = new Date().getTime();
@@ -158,7 +217,7 @@
 			document.getElementById("runTime").innerHTML = runTime;
 		}
 
-		setInterval(setElementData, 1000);
+		setInterval(setElementData, 100);
 
 		function toDataObj(scrollpos) {
 			return {
@@ -197,21 +256,8 @@
 			if (typeof funcRef === 'undefined') {
 				funcRefs = scrollHandler(func);
 				funcRef = throttled ? funcRefs.throttledFunc : funcRefs.func;
-
 				window.addEventListener('scroll', funcRef);
 				startTime = new Date().getTime();
-				var lastScroll = 0;
-				autoScroller = setInterval(function () {
-					var newScroll = lastScroll === 0 ? rootEl.offsetHeight : 0;
-
-					window.scrollTo({
-						top: newScroll,
-						left: 0,
-						behavior: 'smooth'
-					});
-					lastScroll = newScroll;
-				}, 1200);
-
 
 			} else {
 				console.log('test already running')
@@ -221,7 +267,6 @@
 		function _tearDown() {
 			if (typeof funcRef === 'function') {
 				window.removeEventListener('scroll', funcRef);
-				clearInterval(autoScroller);
 				funcRef = undefined;
 				invocations = 0;
 				startTime = 0;
@@ -240,11 +285,6 @@
 			}
 		}
 	};
-
-	function checkChecked(e) {
-		console.log(e)
-	}
-
 	window.tester = window.initTest();
 </script>
 <script type="text/javascript" src="runtime.bundle.js"></script><script type="text/javascript" src="common~create-throttled-function.bundle.js"></script><script type="text/javascript" src="create-throttled-function.bundle.js"></script><script type="text/javascript" src="common~product-finding-methods.bundle.js"></script><script type="text/javascript" src="product-finding-methods.bundle.js"></script></body>
