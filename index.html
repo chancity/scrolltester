@@ -25,6 +25,7 @@
 			box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.24) 0px 1px 4px;
 			border-radius: 0.25em;
 			padding: 12px;
+			margin: 12px;
 		}
 		h2{
 			margin: 0;
@@ -34,13 +35,14 @@
 			border-bottom: 1px rgba(0,0,0,.08) solid;
 			font-weight: 500;
 			opacity: .6;
+			text-align: center;
 		}
 		.wrapper {
-			display: grid;
-			grid-auto-flow:	dense row;
+			display: flex;
+			flex-direction: column;
+			flex-wrap: wrap;
 			position: fixed;
 			width: 100%;
-			grid-gap: 24px;
 			margin-top: 24px;
 			padding-left: 6px;
 			padding-right: 6px;
@@ -50,7 +52,7 @@
 		.infoWrapper {
 			display: flex;
 			justify-content: center;
-			font-size: 24px;
+			font-size: 20px;
 			flex-wrap: wrap;
 		}
 		.controlWrapper {
@@ -73,7 +75,6 @@
 			display: flex;
 			flex-direction: column;
 			padding: 12px;
-			padding-left: 0;
 		}
 
 		.buttonWrapper > button {
@@ -90,6 +91,7 @@
 			font-weight: 600;
 			padding: 12px;
 			margin-bottom: 12px;
+			box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.14) 0px 1px 2px;
 		}
 
 		.buttonWrapper > button:hover {
@@ -103,7 +105,6 @@
 			justify-content: space-around;
 			flex-direction: column;
 			padding: 12px;
-			padding-left: 0;
 		}
 	</style>
 </head>
@@ -122,8 +123,8 @@
 			</span>
 		</div>
 
-		<div class="controlWrapper matcard">
-			<div style="flex: 1 1 auto;margin: 12px;" class="matcard">
+		<div class="controlWrapper">
+			<div style="flex: 1 1 auto;" class="matcard">
 				<h2>Options</h2>
 				<div class="optionsWrapper">
 					<div style="margin-bottom: 24px">
@@ -140,7 +141,7 @@
 					</div>
 				</div>
 			</div>
-			<div style="flex: 10 1 auto;margin: 12px;" class="matcard">
+			<div style="flex: 10 1 auto;" class="matcard">
 				<h2>Select Test</h2>
 				<div class="buttonWrapper">
 					<button onclick="window.tester.tearDown();window.tester.setup(window.addToLocalStorage)">
