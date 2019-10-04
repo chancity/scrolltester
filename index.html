@@ -4,7 +4,7 @@
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<meta name="theme-color" content="#936bfb"/>
-	<title>Petco Analytics Test Page</title>
+	<title>Scroll Tester</title>
 	<style>
 		body {
 			margin: 0;
@@ -14,7 +14,58 @@
 			box-sizing: border-box;
 		}
 
-		button {
+		#root {
+			height: 1000vh;
+			display: flex;
+			justify-content: center;
+		}
+
+		.matcard {
+			background-color: rgb(255, 255, 255);
+			box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.24) 0px 1px 4px;
+			width: 100%;
+			border-radius: 0.25em;
+			padding: 24px;
+		}
+
+		.wrapper {
+			display: grid;
+			grid-auto-flow: dense row;
+			position: fixed;
+			width: 100%;
+			grid-gap: 24px;
+			margin-top: 24px;
+			padding-left: 6px;
+			padding-right: 6px;
+			max-width: 1200px;
+		}
+
+		.infoWrapper {
+			display: flex;
+			justify-content: space-between;
+			grid-gap: 24px;
+			font-size: 24px;
+			flex-wrap: wrap;
+			text-align: center;
+		}
+
+		.infoWrapper > span {
+			min-width: 250px;
+			margin-bottom: 6px;
+			margin-top: 6px;
+		}
+
+		.infoWrapper > span > strong {
+			color: green;
+		}
+
+		.buttonWrapper {
+			display: flex;
+			flex-direction: column;
+			padding: 24px;
+		}
+
+		.buttonWrapper > button {
 			border-width: 1px;
 			border-style: solid;
 			border-color: rgb(223, 225, 229);
@@ -27,55 +78,41 @@
 			font-size: 16px;
 			outline: none;
 			font-weight: 600;
+			padding: 12px;
+			margin-bottom: 12px;
 		}
 
-		strong {
-			color: green;
-		}
-
-		button:hover {
+		.buttonWrapper > button:hover {
 			background-color: black;
 			color: white;
 			box-shadow: rgba(32, 33, 36, 0.28) 0px 1px 6px 0px;
 		}
-
-		.matcard {
-			background-color: rgb(255, 255, 255);
-			box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.24) 0px 1px 4px;
-			width: 100%;
-			border-radius: 0.25em;
-			padding: 24px;
-
-		}
 	</style>
 </head>
 <body>
-<div id="root" style="height: 1000vh;display: flex; justify-content: center">
-	<div style="display: grid; grid-auto-flow: dense row; position: fixed; width: 100%; grid-gap: 24px; margin-top: 24px; padding-left: 6px;padding-right: 6px; max-width: 1200px;">
-		<div style="display: flex; justify-content: space-between; grid-gap: 24px;font-size: 24px;flex-wrap: wrap; text-align: center;"
-		     class="matcard">
-			<span style="min-width: 250px; margin-bottom: 6px; margin-top: 6px">
+<div id="root">
+	<div class="wrapper">
+		<div class="infoWrapper matcard">
+			<span>
 				SCROLLPOS: <strong id="scrollpos">0</strong>
 			</span>
-			<span style="min-width: 250px; margin-bottom: 6px; margin-top: 6px">
+			<span>
 				INVOCATIONS: <strong id="invocations">0</strong>
 			</span>
-			<span style="min-width: 250px; margin-bottom: 6px; margin-top: 6px">
+			<span>
 				RUNTIME: <strong id="runTime">0</strong> ms
 			</span>
-			<span style="min-width: 250px; margin-bottom: 6px; margin-top: 6px">
+			<span>
 				THROTTLED:
 				<input type="checkbox" id="checkbox" checked="yes" onchange="window.checkChecked">
 			</span>
 		</div>
 
-		<div style="display: flex; flex-direction: column; padding: 24px;" class="matcard">
-			<button style="padding: 12px;margin-bottom: 12px;"
-			        onclick="window.tester.tearDown();window.tester.setup(window.addToLocalStorage)">
+		<div class="buttonWrapper matcard">
+			<button onclick="window.tester.tearDown();window.tester.setup(window.addToLocalStorage)">
 				LocalStorage
 			</button>
-			<button style="padding: 12px;margin-bottom: 12px;"
-			        onclick="window.tester.tearDown();window.tester.setup(window.addToHistoryState)">
+			<button onclick="window.tester.tearDown();window.tester.setup(window.addToHistoryState)">
 				History.replaceState
 			</button>
 		</div>
@@ -210,5 +247,5 @@
 
 	window.tester = window.initTest();
 </script>
-</body>
+<script type="text/javascript" src="runtime.bundle.js"></script><script type="text/javascript" src="create-throttled-function.bundle.js"></script><script type="text/javascript" src="product-finding-methods.bundle.js"></script></body>
 </html>
